@@ -47,7 +47,7 @@ export class CdkAppStack extends cdk.Stack {
         }
     });
 
-    const amplifyApp = new amplify.App(this, 'rbook', {
+    const amplifyApp = new amplify.App(this, 'room-booking-system', {
       environmentVariables: {
         REACT_APP_API_URL: api.url,
       },
