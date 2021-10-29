@@ -1,0 +1,37 @@
+{
+    "name": "@booking/api",
+    "version": "2.1.1",
+    "private": true,
+    "description": "Example application for running a Node Express app on AWS Lambda using Amazon API Gateway.",
+    "main": "lambda.js",
+    "config": {
+      "s3BucketName": "sls-xpress-edge1",
+      "region": "us-east-1",
+      "cloudFormationStackName": "ServerlessExpressHttpApiStack",
+      "functionName": "",
+      "domain": ""
+    },
+    "scripts": {
+      "start": "node app.local.js"
+    },
+    "license": "Apache-2.0",
+    "dependencies": {
+      "@vendia/serverless-express": "4.3.0",
+      "body-parser": "1.17.1",
+      "compression": "1.6.2",
+      "cors": "2.8.3",
+      "ejs": "3.1.6",
+      "express": "4.15.2",
+      "jsonwebtoken": "8.1.0",
+      "moment": "2.20.1",
+      "moment-timezone": "0.5.14",
+      "mongoose": "4.13.9",
+      "mongoose-timestamp": "0.6.0",
+      "passport": "0.4.0",
+      "passport-google-oauth20": "1.0.0",
+      "passport-jwt": "3.0.1",
+      "passport-local": "1.0.0",
+      "passport-local-mongoose": "4.4.0",
+      "source-map-support": "^0.5.16"
+    }
+  }

@@ -1,0 +1,79 @@
+name: Deploy AWS CDK
+
+on:
+  push:
+    branches: [master, qa, integration]
+  workflow_dispatch:
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+      DENV: ${{ steps.setup.outputs.DENV }}
+    steps:
+      - name: setup
+        id: setup
+        run: |
+          DENV=$(echo $GITHUB_REF | sed 's/^refs.heads.//')
+          echo "${GITHUB_REF} => ${DENV}"
+          echo "::set-output name=DENV::${DENV}"
+
+  build:
+    runs-on: ubuntu-latest
+    needs: setup
+    environment: ${{needs.setup.outputs.DENV}}
+
+    steps:
+      - name: Select Environment
+        env:
+          DENV: ${{needs.setup.outputs.DENV}}
+        run: |
+          echo "env: ${DENV}"
+          echo "ENV=${DENV}" >> $GITHUB_ENV
+
+      - name: Configure AWS credentials for master
+        uses: aws-actions/configure-aws-credentials@v1
+        if: ${{env.ENV == 'master'}}
+        with:
+          aws-access-key-id: ${{ secrets.LIVE_AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.LIVE_AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-2
+
+      - name: Configure AWS credentials for qa
+        uses: aws-actions/configure-aws-credentials@v1
+        if: ${{env.ENV == 'qa'}}
+        with:
+          aws-access-key-id: ${{ secrets.QA_AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.QA_AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Configure AWS credentials for dev
+        uses: aws-actions/configure-aws-credentials@v1
+        if: ${{env.ENV == 'integration'}}
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-2
+
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Select Node.js version
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+
+      - name: Install api modules
+        working-directory: ./packages/api
+        run: "yarn install"
+
+      - name: Build and Deploy Infra
+        working-directory: ./packages/cdk-app
+        run: "yarn install && yarn cdk deploy --require-approval never"
+
+      - name: Build & Deploy Frontend
+        working-directory: ./packages/web
+        run: |
+          ./scripts/manage.sh configure
+          ./scripts/manage.sh build
+          ./scripts/manage.sh deploy
