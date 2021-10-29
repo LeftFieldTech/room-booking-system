@@ -116,6 +116,7 @@ function do_build {
     status "Install packages..."
     yarn install
 
+    source ./scripts/env.sh
     status "Build application..."
     yarn run build
 }
@@ -177,7 +178,7 @@ function do_deploy {
     if [ ! -z "${BRANCH}" ]; then
       status "Existing Amplify environment found for branch ${GIT_BRANCH}"
 
-      buildZip ${BUILD_NAME} ./public
+      buildZip ${BUILD_NAME} ./build
 
       uploadZip ${BUILD_NAME} ${BUCKET}
 
