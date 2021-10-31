@@ -33,7 +33,7 @@ case $GIT_BRANCH in
     ;;
   *)
     AWS_REGION="us-east-2"
-    ENV=dev
+    ENV=integration
     NODE_ENV=development
     ;;
 esac
