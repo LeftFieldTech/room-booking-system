@@ -6,7 +6,7 @@ const compression = require('compression')
 const { getCurrentInvoke } = require('@vendia/serverless-express')
 const app = express()
 const router = express.Router()
-const authMiddleware = require('./middleware/auth')
+// const authMiddleware = require('./middleware/auth')
 
 
 router.use(compression())
@@ -14,7 +14,7 @@ router.use(cors())
 router.use(bodyParser.json())
 router.use(bodyParser.urlencoded({ extended: true }))
 
-router.use(authMiddleware.initialize)
+// router.use(authMiddleware.initialize)
 
 // Routes
 router.use([require('./routes/auth'), require('./routes/rooms')])

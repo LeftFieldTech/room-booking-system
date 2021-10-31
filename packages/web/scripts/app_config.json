@@ -1,0 +1,37 @@
+{
+    "app": {
+        "appId": "d2047cvrr31bpx",
+        "appArn": "arn:aws:amplify:us-east-2:616007168569:apps/d2047cvrr31bpx",
+        "name": "room-booking-system",
+        "tags": {},
+        "platform": "WEB",
+        "createTime": "2021-10-29T08:38:02.965000+08:00",
+        "updateTime": "2021-10-31T12:32:37.471000+08:00",
+        "iamServiceRoleArn": "arn:aws:iam::616007168569:role/CdkAppStack-roombookingsystemRole4CE00B32-161LDJ2ZL27QH",
+        "environmentVariables": {
+            "REACT_APP_API_URL": "https://m09ugndklh.execute-api.us-east-2.amazonaws.com/prod/",
+            "REACT_APP_AWS_REGION": "us-east-2",
+            "REACT_APP_IDENTITYPOOL_ID": "us-east-2:bd3246a6-875f-4abe-b0f3-b6b2722ba2ec",
+            "REACT_APP_USERPOOL_CLIENT_ID": "33duadbr34h09bae3qnk99l0ct",
+            "REACT_APP_USERPOOL_ID": "us-east-2_tKTwGt2LM"
+        },
+        "defaultDomain": "d2047cvrr31bpx.amplifyapp.com",
+        "enableBranchAutoBuild": false,
+        "enableBranchAutoDeletion": false,
+        "enableBasicAuth": false,
+        "customRules": [
+            {
+                "source": "</^[^.]+$/>",
+                "target": "/index.html",
+                "status": "200"
+            },
+            {
+                "source": "/api",
+                "target": "https://m09ugndklh.execute-api.us-east-2.amazonaws.com/prod/",
+                "status": "200"
+            }
+        ],
+        "customHeaders": "",
+        "enableAutoBranchCreation": false
+    }
+}

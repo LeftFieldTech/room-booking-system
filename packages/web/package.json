@@ -3,19 +3,22 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@aws-amplify/ui-react": "^1.2.22",
+    "aws-amplify": "^4.3.4",
     "axios": "^0.17.1",
+    "http-proxy-middleware": "^2.0.1",
     "jwt-decode": "^2.2.0",
     "moment": "^2.20.1",
     "moment-timezone": "^0.5.14",
     "normalize.css": "^7.0.0",
     "query-string": "^5.0.1",
-    "react": "^16.2.0",
+    "react": "17.0.2",
     "react-datetime": "^2.11.1",
-    "react-dom": "^16.2.0",
+    "react-dom": "17.0.2",
     "react-loading-animation": "^1.4.0",
     "react-modal": "^3.1.11",
     "react-router-dom": "^4.2.2",
-    "react-scripts": "1.0.17"
+    "react-scripts": "4.0.3"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -30,5 +33,11 @@
     "autoprefixer-stylus": "^0.14.0",
     "concurrently": "^3.5.1",
     "stylus": "^0.54.5"
-  }
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
 }

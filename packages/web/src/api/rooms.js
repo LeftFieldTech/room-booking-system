@@ -1,7 +1,5 @@
-import React from 'react'
-import moment from 'moment'
-import api from './init'
+import { API } from 'aws-amplify';
 
-export function listRooms() {
-  return api.get('/rooms').then(res => res.data)
+export async function listRooms() {
+  return API.get('demoAPI','/rooms')
 }

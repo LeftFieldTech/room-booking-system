@@ -54,6 +54,7 @@ passport.use(
       algorithms: [jwtAlgorithm]
     },
     (payload, done) => {
+      console.log('payload: ', payload);
       User.findById(payload.sub)
         .then(user => {
           if (user) {

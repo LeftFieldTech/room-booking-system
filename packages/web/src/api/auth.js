@@ -1,5 +1,6 @@
 import api, { setToken } from './init'
 import { getDecodedToken } from './token'
+import { Auth } from 'aws-amplify'
 
 // Sends a POST request to /auth/sign-up on the server, with first name, last name, email & password registering the user and returning the JWT
 export function signUp({ firstName, lastName, email, password }) {
@@ -29,4 +30,16 @@ export function signIn({ email, password }) {
 
 export function signOut() {
   setToken(null)
+}
+
+
+export async function getSessionToken() {
+  try {
+    const session = await Auth.currentSession()
+    const token = session.getIdToken().getJwtToken()
+    return token
+  }catch(err) {
+    console.log('err: ', err);
+    return null
+  }
 }

@@ -3,10 +3,11 @@ const moment = require('moment')
 const momentTimezone = require('moment-timezone')
 const Room = require('../models/Room')
 const { requireJWT } = require('../middleware/auth')
+const { getCurrentInvoke } = require('@vendia/serverless-express')
 
 const router = new express.Router()
 
-router.get('/rooms', requireJWT, (req, res) => {
+router.get('/rooms', (req, res) => {
   Room.find()
     .then(rooms => {
       res.json(rooms)
@@ -16,7 +17,7 @@ router.get('/rooms', requireJWT, (req, res) => {
     })
 })
 
-router.post('/rooms', requireJWT, (req, res) => {
+router.post('/rooms', (req, res) => {
   Room.create(req.body)
     .then(room => {
       res.status(201).json(room)
@@ -43,9 +44,11 @@ const durationHours = (bookingStart, bookingEnd) => {
 }
 
 // Make a booking
-router.put('/rooms/:id', requireJWT, (req, res) => {
+router.put('/rooms/:id', (req, res) => {
   const { id } = req.params
-
+  const { event } = getCurrentInvoke()
+  // console.log('context: ', context);
+  // console.log('event: ', event);
   // If the recurring array is empty, the booking is not recurring
   if (req.body.recurring.length === 0) {
     Room.findByIdAndUpdate(
@@ -53,7 +56,7 @@ router.put('/rooms/:id', requireJWT, (req, res) => {
       {
         $addToSet: {
           bookings: {
-            user: req.user,
+            user: event.requestContext.authorizer.claims.sub,
             // The hour on which the booking starts, calculated from 12:00AM as time = 0
             startHour: dateAEST(req.body.bookingStart).format('H.mm'),
             // The duration of the booking in decimal format
@@ -151,7 +154,7 @@ router.put('/rooms/:id', requireJWT, (req, res) => {
 })
 
 // Delete a booking
-router.delete('/rooms/:id/:bookingId', requireJWT, (req, res) => {
+router.delete('/rooms/:id/:bookingId', (req, res) => {
   const { id } = req.params
   const { bookingId } = req.params
   Room.findByIdAndUpdate(

@@ -4,7 +4,7 @@ const moment = require('moment')
 
 const bookingSchema = new Schema({
   _bookingId: Schema.Types.ObjectId,
-  user: { type: Schema.ObjectId, ref: 'User' },
+  user: { type: String, required: true },
   bookingStart: Date,
   bookingEnd: Date,
   startHour: Number,

@@ -1,6 +1,6 @@
 import moment from 'moment'
 import momentTimezone from 'moment-timezone'
-import api from './init'
+import { API } from 'aws-amplify';
 
 // Function to receive booking data (AEST) and convert to JS Date object
 // Data expected in [year, month, date, hours, seconds] format
@@ -45,23 +45,23 @@ export function makeBooking(data, existingBookings) {
 
   // Save the booking to the database and return the booking if there are no clashes and the new booking time is not in the past
   if (!bookingClash && validDate && validRecurring) {
-    return api.put(`/rooms/${data.roomId}`, {
-      bookingStart: bookingStart,
-      bookingEnd: bookingEnd,
-      businessUnit: data.businessUnit,
-      purpose: data.purpose,
-      roomId: data.roomId,
-      recurring: data.recurringData
+    return API.put('demoAPI', `/rooms/${data.roomId}`, {
+      body: {
+        bookingStart: bookingStart,
+        bookingEnd: bookingEnd,
+        businessUnit: data.businessUnit,
+        purpose: data.purpose,
+        roomId: data.roomId,
+        recurring: data.recurringData
+      }
     })
-      .then(res => res.data)
       .catch(err => alert(err.response.data.error.message.match(/error:.+/i)[0]))
   }
 }
 
 // Delete a room booking
 export function deleteBooking(roomId, bookingId) {
-  return api.delete(`/rooms/${roomId}/${bookingId}`)
-    .then(res => res.data)
+  return API.del('demoAPI',`/rooms/${roomId}/${bookingId}`)
 }
 
 export function updateStateRoom(self, updatedRoom, loadMyBookings) {

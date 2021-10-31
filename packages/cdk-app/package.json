@@ -24,6 +24,7 @@
   "dependencies": {
     "@aws-cdk/aws-amplify": "1.115.0",
     "@aws-cdk/aws-apigateway": "1.115.0",
+    "@aws-cdk/aws-cognito": "1.115.0",
     "@aws-cdk/aws-lambda": "1.115.0",
     "@aws-cdk/aws-lambda-nodejs": "1.115.0",
     "@aws-cdk/core": "1.115.0",

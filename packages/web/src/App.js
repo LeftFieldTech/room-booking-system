@@ -31,6 +31,7 @@ import Calendar from './components/Calendar'
 import BookingModal from './components/BookingModal'
 import { floorParams, filterParams, capacityParams, onFilterByFloor, onFilterByFeature, onFilterByCapacity, onFilterByAvailablity } from './helpers/filters'
 import { initialRoom } from './helpers/rooms'
+import { withAuthenticator } from '@aws-amplify/ui-react';
 
 class App extends Component {
   state = {
@@ -96,11 +97,13 @@ class App extends Component {
         existingBookings
       )
         .then(updatedRoom => {
+          console.log('updatedRoom: ', updatedRoom);
           // If the new booking is successfully saved to the database
           alert(`${updatedRoom.name} successfully booked.`)
           updateStateRoom(this, updatedRoom, this.loadMyBookings)
         })
     } catch (err) {
+      console.log('err: ', err);
       // If there is a booking clash and the booking could not be saved
       alert(
         'Your booking could not be saved. Please ensure it does not clash with an existing booking and that it is a valid time in the future.'
@@ -456,4 +459,4 @@ class App extends Component {
 
 }
 
-export default App
+export default withAuthenticator(App)
