@@ -181,12 +181,13 @@ export class CdkAppStack extends cdk.Stack {
         REACT_APP_USERPOOL_CLIENT_ID: userPoolClient.userPoolClientId,
       },
     });
-    amplifyApp.addCustomRule(amplify.CustomRule.SINGLE_PAGE_APPLICATION_REDIRECT);
     amplifyApp.addCustomRule({
-      source: '/api',
-      target: `${api.url}`,
-      status: amplify.RedirectStatus.REWRITE
+      source: '/api/<*>',
+      target: `${api.url}<*>`,
+      status: amplify.RedirectStatus.REWRITE,
+      
     });
+    amplifyApp.addCustomRule(amplify.CustomRule.SINGLE_PAGE_APPLICATION_REDIRECT);
     amplifyApp.applyRemovalPolicy(cdk.RemovalPolicy.DESTROY)
     const branch = amplifyApp.addBranch(branchName, {
       branchName: branchName,

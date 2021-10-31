@@ -28,8 +28,9 @@ export function signIn({ email, password }) {
     })
 }
 
-export function signOut() {
-  setToken(null)
+export async function signOut() {
+  await Auth.signOut()
+  localStorage.clear()
 }
 
 

@@ -3,7 +3,7 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
-  Redirect
+  Redirect,
 } from 'react-router-dom'
 import './css/style.css'
 import moment from 'moment'
@@ -32,10 +32,11 @@ import BookingModal from './components/BookingModal'
 import { floorParams, filterParams, capacityParams, onFilterByFloor, onFilterByFeature, onFilterByCapacity, onFilterByAvailablity } from './helpers/filters'
 import { initialRoom } from './helpers/rooms'
 import { withAuthenticator } from '@aws-amplify/ui-react';
+import { Auth } from 'aws-amplify'
 
 class App extends Component {
   state = {
-    decodedToken: getDecodedToken(), // retrieves the token from local storage if valid, else will be null
+    decodedToken: null, // retrieves the token from local storage if valid, else will be null
     roomData: null,
     userBookings: null,
     calendarDate: new Date(),
@@ -66,9 +67,9 @@ class App extends Component {
   }
 
   // Removes the current token from local storage
-  onSignOut = () => {
-    signOut()
-    this.setState({ decodedToken: null })
+  onSignOut = async() => {
+    await signOut()
+    // browserHistory.push('/')
   }
 
   setCalendarDate = date => {
@@ -249,28 +250,14 @@ class App extends Component {
       filteredData = onFilterByAvailablity(availabilityParam, filteredData)
     }
 
-    const requireAuth = render => () =>
-      signedIn ? render() : <Redirect to="/" />
-
     return (
       <Router>
         <div id="app" className="App">
           <Fragment>
               <Switch>
-                <Route path="/" exact render={() => (!!decodedToken && signedIn ?
-                  (<Redirect to="/bookings" />) :
-                  (<div className="wrapper__form">
-                      <div className="header__page">
-                        <h2 className="header__heading header__heading--sub--alt">Sign in with email</h2>
-                      </div>
-                      <SignInForm onSignIn={this.onSignIn} />
-                      <h3 className="header__heading header__heading--sub--alt">Don't have an account?</h3>
-                      <SignUpForm onSignUp={this.onSignUp} />
-                    </div>
-                  )
-                )} />
+                <Route path="/" exact render={() => <Redirect to="/bookings" />} />
 
-                <Route path="/bookings" exact render={requireAuth(() => (
+                <Route path="/bookings" exact render={() => (
                   <Fragment>
                     { !!decodedToken && !roomData && loading && (
                       <div className="loading_animation">
@@ -335,10 +322,9 @@ class App extends Component {
                       </div>
                     )}
                   </Fragment>
-                ))} />
+                )} />
 
-                <Route path="/createbooking" exact render={requireAuth(
-                  () => (
+                <Route path="/createbooking" exact render={() => (
                     <Fragment>
                       {!!decodedToken &&
                         !!roomData &&
@@ -374,10 +360,9 @@ class App extends Component {
                         </div>
                       )}
                     </Fragment>
-                  )
-                )} />
+                  )} />
 
-                <Route path="/mybookings" exact render={requireAuth(() => (
+                <Route path="/mybookings" exact render={() => (
                     <Fragment>
                       {!!decodedToken &&
                         !!roomData && (
@@ -404,7 +389,7 @@ class App extends Component {
                           </div>
                         )}
                     </Fragment>
-                  ))} />
+                  )} />
 
                 <Route render={({ location }) => <h2>
                       {' '}
@@ -417,30 +402,31 @@ class App extends Component {
     )
   }
 
-  load() {
+  async load() {
     const { decodedToken } = this.state
     const signedIn = !!decodedToken
 
-    if (signedIn) {
-      // display loading page
-      this.setState({ loading: true })
-      // load all of the rooms from the database
-      listRooms()
-        .then(rooms => {
-          this.setState({ roomData: rooms })
-          // load the current user's bookings
-          this.loadMyBookings()
-          // the state's current room defaults to first room
-          const room = this.state.roomData[0]
-          this.setRoom(room._id)
-          // toggle loading page off
-          this.setState({ loading: false })
-        })
-        .catch(error => {
-          console.error('Error loading room data', error)
-          this.setState({ error })
-        })
-    }
+    // display loading page
+    this.setState({ loading: true })
+    const result = await Auth.currentUserInfo()
+    this.setState({ decodedToken: result.attributes })
+    // load all of the rooms from the database
+    listRooms()
+      .then(rooms => {
+        this.setState({ roomData: rooms })
+        // load the current user's bookings
+        this.loadMyBookings()
+        // the state's current room defaults to first room
+        const room = this.state.roomData[0]
+        this.setRoom(room._id)
+        // toggle loading page off
+        this.setState({ loading: false })
+      })
+      .catch(error => {
+        console.error('Error loading room data', error)
+        this.setState({ error })
+      })
+    
   }
 
   // When the App first renders
@@ -448,15 +434,12 @@ class App extends Component {
     this.load()
   }
 
-  // When state changes
-  componentDidUpdate(prevProps, prevState) {
-    // If just signed in, signed up, or signed out,
-    // then the token will have changed
-    if (this.state.decodedToken !== prevState.decodedToken) {
-      this.load()
-    }
-  }
+  // // When state changes
+  // componentDidUpdate(prevProps, prevState) {
+  //   // If just signed in, signed up, or signed out,
+  //   // then the token will have changed
+  // }
 
 }
 
-export default withAuthenticator(App)
+export default withAuthenticator(App, false)
