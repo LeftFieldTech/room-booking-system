@@ -442,4 +442,8 @@ class App extends Component {
 
 }
 
-export default withAuthenticator(App, false)
+export default withAuthenticator(App, {
+  signUpConfig: {
+    hiddenDefaults: ['phone_number']
+  }
+})
