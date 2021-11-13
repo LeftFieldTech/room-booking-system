@@ -55,7 +55,7 @@ export class CdkAppStack extends cdk.Stack {
 
     const userPool = new cognito.UserPool(this, 'rbook-userpool', {
       selfSignUpEnabled: true,
-      accountRecovery: cognito.AccountRecovery.PHONE_AND_EMAIL,
+      accountRecovery: cognito.AccountRecovery.EMAIL_ONLY,
       userVerification: {
         emailStyle: cognito.VerificationEmailStyle.CODE,
       },
