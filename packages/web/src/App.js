@@ -31,8 +31,8 @@ import Calendar from './components/Calendar'
 import BookingModal from './components/BookingModal'
 import { floorParams, filterParams, capacityParams, onFilterByFloor, onFilterByFeature, onFilterByCapacity, onFilterByAvailablity } from './helpers/filters'
 import { initialRoom } from './helpers/rooms'
-import { withAuthenticator } from '@aws-amplify/ui-react';
 import { Auth } from 'aws-amplify'
+import withAuthenticator from './helpers/withAuthenticator'
 
 class App extends Component {
   state = {
@@ -442,8 +442,4 @@ class App extends Component {
 
 }
 
-export default withAuthenticator(App, {
-  signUpConfig: {
-    hiddenDefaults: ['phone_number']
-  }
-})
+export default withAuthenticator(App)
